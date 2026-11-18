@@ -16,20 +16,11 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+from app.db import connect
 from app.ingestion import SYNC_LOCK, get_sync_status, sync_all
 
 ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(ROOT / ".env")
-DB_PATH = Path(os.getenv("DATABASE_PATH", "data/jobs.db"))
-if not DB_PATH.is_absolute():
-    DB_PATH = ROOT / DB_PATH
-
-
-def connect() -> sqlite3.Connection:
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    db = sqlite3.connect(DB_PATH)
-    db.row_factory = sqlite3.Row
-    return db
 
 
 def init_db() -> None:
@@ -95,10 +86,15 @@ async def lifespan(_: FastAPI):
 app = FastAPI(title="Fresher Jobs India API", version="0.1.0", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "https://firstStep.sbdevstudio.in",
+        "https://firststep.sbdevstudio.in",
+    ],
+    allow_origin_regex=r"https://.*\.sbdevstudio\.in",
     allow_credentials=False,
-    allow_methods=["GET", "POST"],
-    allow_headers=["Content-Type"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
 )
 
 

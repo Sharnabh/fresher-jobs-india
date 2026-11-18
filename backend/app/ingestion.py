@@ -20,6 +20,7 @@ from urllib.robotparser import RobotFileParser
 import xml.etree.ElementTree as ET
 
 from dotenv import load_dotenv
+from app.db import connect as _database
 
 ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(ROOT / ".env")
@@ -630,13 +631,6 @@ def call_gemini_batch(jobs: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
         raise RuntimeError("Gemini could not be reached") from exc
     except (KeyError, IndexError, TypeError, ValueError, json.JSONDecodeError) as exc:
         raise RuntimeError("Gemini returned an invalid classification") from exc
-
-
-def _database() -> sqlite3.Connection:
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    db = sqlite3.connect(DB_PATH)
-    db.row_factory = sqlite3.Row
-    return db
 
 
 def _source_url(source: dict[str, Any]) -> str:

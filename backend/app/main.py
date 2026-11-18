@@ -91,7 +91,7 @@ app.add_middleware(
         "https://firstStep.sbdevstudio.in",
         "https://firststep.sbdevstudio.in",
     ],
-    allow_origin_regex=r"https://.*\.sbdevstudio\.in",
+    allow_origin_regex=r"https://.*(\.sbdevstudio\.in|\.vercel\.app)",
     allow_credentials=False,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],

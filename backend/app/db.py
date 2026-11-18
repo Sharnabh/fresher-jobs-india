@@ -68,6 +68,8 @@ class LibsqlWrapper:
     def execute(self, sql: str, params: Any = None) -> CursorWrapper:
         cur = self._conn.cursor()
         if params is not None:
+            if isinstance(params, list):
+                params = tuple(params)
             cur.execute(sql, params)
         else:
             cur.execute(sql)
